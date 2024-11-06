@@ -1,0 +1,129 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+version = "1.5.0"
+group = "cn.mmf"
+archivesBaseName = "SJAP"
+
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2847"
+    runDir = "run"
+	
+    mappings = "snapshot_20171003"
+	
+	 replace "@version@", project.version
+
+}
+
+dependencies {
+    // you may put jars on which you depend on in ./libs
+    // or you may define them like so..
+    //compile "some.group:artifact:version:classifier"
+    //compile "some.group:artifact:version"
+      
+    // real examples
+    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
+    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+
+    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
+    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
+    // except that these dependencies get remapped to your current MCP mappings
+    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // for more info...
+    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
+    // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+}
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+	
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+	
+
+}
+repositories {
+    maven {
+	url 'https://maven.blamejared.com' 
+	}
+	maven {
+        name = "CoFH Maven"
+        url = "http://maven.covers1624.net"
+    }
+	  	maven {
+    name = "Chickenbones maven"
+    url = "http://chickenbones.net/maven/"
+	}
+	maven {
+    // location of the maven that hosts JEI files
+    name = "Progwml6 maven"
+    url = "http://dvs1.progwml6.com/files/maven"
+	}
+
+	maven {
+    // location of a maven mirror for JEI files, as a fallback
+    name = "ModMaven"
+    url = "modmaven.k-4u.nl"
+	}
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+
+}
+
+dependencies {
+	configurations.all {
+		resolutionStrategy {
+			force 'mezz.jei:jei_1.12.2:4.14.3.238'
+		}
+	}
+	// compile against the JEI API but do not include it at runtime
+    deobfProvided ("mezz.jei:jei_1.12.2:4.14.3.238:api"){
+	force = true
+	}
+    // at runtime, use the full JEI jar
+    runtime ("mezz.jei:jei_1.12.2:4.14.3.238"){
+	force = true
+	}
+	deobfCompile "curse.maven:baubles:2518667"
+    compile "vazkii.patchouli:Patchouli:1.0-16.84"
+	deobfCompile "vazkii.botania:Botania:r1.10-357.7"
+	deobfCompile "curse.maven:thaumcraft:2629023"
+	deobfCompile "curse.maven:the-twilight-forest:2818055"
+}

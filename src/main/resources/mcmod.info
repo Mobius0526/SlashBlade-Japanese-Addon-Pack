@@ -3,8 +3,6 @@
   "modid": "slashblade_addon",
   "name": "SlashBlade Japanese Addon Pack",
   "description":"SlashBlade Japanese Addon in 1.12.2",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
   "authors": [ "Syameimaru_Zheng"],
